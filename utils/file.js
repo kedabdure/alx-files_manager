@@ -169,7 +169,6 @@ const fileUtils = {
   },
 
   processFile(doc) {
-
     const file = { id: doc._id, ...doc };
 
     delete file.localPath;

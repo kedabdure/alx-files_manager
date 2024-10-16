@@ -8,7 +8,6 @@ function controllerRouting(app) {
   const router = express.Router();
   app.use('/', router);
 
-
   router.get('/status', (req, res) => {
     AppController.getStatus(req, res);
   });
