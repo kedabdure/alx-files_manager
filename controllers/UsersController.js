@@ -1,29 +1,44 @@
-const crypto = require('crypto');
-const dbClient = require('../utils/db');
+import sha1 from 'sha1';
+import dbClient from '../utils/db';
+
+const userQueue = new Queue('userQueue');
 
 class UsersController {
-  static async postNew(req, res) {
-    const { email, password } = req.body;
+  static async postNew(request, response) {
+    const { email, password } = request.body;
 
-    if (!email) {
-      return res.status(400).json({ error: 'Missing email' });
+    if (!email) return response.status(400).send({ error: 'Missing email' });
+
+    if (!password) { return response.status(400).send({ error: 'Missing password' }); }
+
+    const emailExists = await dbClient.usersCollection.findOne({ email });
+
+    if (emailExists) { return response.status(400).send({ error: 'Already exist' }); }
+
+    const sha1Password = sha1(password);
+
+    let result;
+    try {
+      result = await dbClient.usersCollection.insertOne({
+        email,
+        password: sha1Password,
+      });
+    } catch (err) {
+      await userQueue.add({});
+      return response.status(500).send({ error: 'Error creating user.' });
     }
 
-    if (!password) {
-      return res.status(400).json({ error: 'Missing password' });
-    }
-
-    const hashedPassword = crypto.createHash('sha1').update(password).digest('hex');
-
-    const newUser = {
+    const user = {
+      id: result.insertedId,
       email,
-      password: hashedPassword,
     };
 
-    const result = await dbClient.db.collection('users').insertONe(newUser);
+    await userQueue.add({
+      userId: result.insertedId.toString(),
+    });
 
-    return res.status(201).json({ id: result.insertedId, email });
+    return response.status(201).send(user);
   }
 }
 
-module.exports = UsersController;
+export default UsersController;
