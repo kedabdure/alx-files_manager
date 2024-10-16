@@ -17,7 +17,6 @@ function controllerRouting(app) {
     AppController.getStats(req, res);
   });
 
-
   router.post('/users', (req, res) => {
     UsersController.postNew(req, res);
   });
@@ -26,7 +25,6 @@ function controllerRouting(app) {
     UsersController.getMe(req, res);
   });
 
-
   router.get('/connect', (req, res) => {
     AuthController.getConnect(req, res);
   });
@@ -34,7 +32,6 @@ function controllerRouting(app) {
   router.get('/disconnect', (req, res) => {
     AuthController.getDisconnect(req, res);
   });
-
 
   router.post('/files', (req, res) => {
     FilesController.postUpload(req, res);
