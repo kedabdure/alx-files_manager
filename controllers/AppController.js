@@ -1,5 +1,5 @@
-import dbClient from '../utils/db.js'
-import redisClient from '../utils/redis.js';
+import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 class AppController {
   static async getStatus(req, res) {
@@ -7,11 +7,10 @@ class AppController {
       const dbAlive = dbClient.isAlive();
       const redisAlive = redisClient.isAlive();
 
-
-      res.status(200).json({ redis: redisAlive, db: dbAlive })
+      res.status(200).json({ redis: redisAlive, db: dbAlive });
     } catch (error) {
       console.error('Error checking status:', error);
-      res.status(500).json({ error: "Internal Server Error" });
+      res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 
@@ -23,7 +22,7 @@ class AppController {
       res.status(200).json({ users: usersCount, files: filesCount });
     } catch (error) {
       console.error('Error getting status:', error);
-      res.status(500).json({error: 'Internal server error'});
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 }
