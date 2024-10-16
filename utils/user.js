@@ -2,6 +2,7 @@ import redisClient from './redis';
 import dbClient from './db';
 
 const userUtils = {
+
   async getUserIdAndKey(request) {
     const obj = { userId: null, key: null };
 
